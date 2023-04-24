@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Error, Result};
 use clap::Parser;
 use std::net::IpAddr;
-use std::num::{NonZeroU16, NonZeroU8};
+use std::num::NonZeroU16;
 use std::str::FromStr;
 
 #[derive(Parser, Clone, Debug, Eq, PartialEq)]
@@ -17,7 +17,7 @@ pub(crate) struct Opts {
 pub(crate) enum Target {
     Tcp { port: NonZeroU16 },
     Udp { port: NonZeroU16 },
-    Sleep { secs: NonZeroU8 },
+    Sleep { secs: u8 },
 }
 
 impl TryFrom<&str> for Target {
@@ -42,13 +42,13 @@ fn parse_target(value: &str) -> Result<Target> {
             port: NonZeroU16::from_str(rest)?,
         }),
         's' | 'S' | 'p' | 'P' => Ok(Target::Sleep {
-            secs: NonZeroU8::from_str(rest)?,
+            secs: rest.parse()?,
         }),
 
         '0'..='9' => Ok(Target::Tcp {
             port: NonZeroU16::from_str(value)?,
         }),
 
-        _ => Err(anyhow!("Unknown target: '{value}'")),
+        ch => Err(anyhow!("Unknown ident '{ch}' for the value '{value}'")),
     }
 }
