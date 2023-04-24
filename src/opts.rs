@@ -41,7 +41,7 @@ fn parse_target(value: &str) -> Result<Target> {
         'u' | 'U' => Ok(Target::Udp {
             port: NonZeroU16::from_str(rest)?,
         }),
-        's' | 'S' => Ok(Target::Sleep {
+        's' | 'S' | 'p' | 'P' => Ok(Target::Sleep {
             secs: NonZeroU8::from_str(rest)?,
         }),
 
